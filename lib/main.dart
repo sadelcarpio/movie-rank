@@ -8,12 +8,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
-  // var user = prefs.getString('user');
+  await dotenv.load(fileName: 'assets/dotenv');
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var user = prefs.getString('user');
   runApp(MaterialApp(
-    home: null == null ? const MyApp() : const HomePage(),
+    home: user == null ? const MyApp() : HomePage(name: user),
     debugShowCheckedModeBanner: false,
+    builder: EasyLoading.init(),
   ));
 }
 
@@ -29,7 +30,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber,
       ),
       home: const LoginPage(title: 'Login'),
-      builder: EasyLoading.init(),
     );
   }
 }

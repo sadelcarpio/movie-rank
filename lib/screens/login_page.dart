@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:movie_ratings/services/user_mgmt.dart';
+import 'package:movie_ratings/services/api_calls.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key, required this.title}) : super(key: key);
@@ -11,8 +11,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late String user;
-  late String password;
+  late String username, password, email;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Image.asset(
-          'assets/images/movie_collage.jpeg',
+          'assets/images/movie_collage.webp',
           fit: BoxFit.cover,
         ),
       ),
@@ -98,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: SizedBox(
                                 height: 20,
                                 width: 20,
-                                child: SvgPicture.asset('assets/logos/user.svg',
+                                child: SvgPicture.asset('assets/logos/mail.svg',
                                     fit: BoxFit.scaleDown),
                               ),
                             ),
@@ -106,13 +105,13 @@ class _LoginPageState extends State<LoginPage> {
                               minWidth: 20,
                               minHeight: 20,
                             ),
-                            hintText: 'Usuario',
+                            hintText: 'Correo',
                             contentPadding: const EdgeInsets.all(8.0),
                             isDense: true,
                             hintStyle: const TextStyle(fontSize: 14)),
                         onChanged: (value) {
                           setState(() {
-                            user = value;
+                            email = value;
                           });
                         },
                       ),
@@ -121,6 +120,9 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 40, vertical: 0),
                       child: TextFormField(
+                        onFieldSubmitted: (value) async {
+                          await HttpService.login(email, password, context);
+                        },
                         obscureText: true,
                         decoration: InputDecoration(
                             fillColor: Colors.white,
@@ -164,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: TextButton(
                           onPressed: () async {
-                            await HttpService.login(user, password, context);
+                            await HttpService.login(email, password, context);
                           },
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
@@ -218,7 +220,191 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await showDialog(
+                              builder: (BuildContext context) {
+                                late String email, username, password;
+                                return AlertDialog(
+                                    content: SizedBox(
+                                  height: 320,
+                                  width: 300,
+                                  child: Column(children: [
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 15.0),
+                                      child: Text(
+                                        'Registro',
+                                        style: TextStyle(
+                                          fontFamily: 'Titilium',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 24.0,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          fillColor: Colors.white,
+                                          filled: true,
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          prefixIcon: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: SvgPicture.asset(
+                                                  'assets/logos/mail.svg',
+                                                  fit: BoxFit.scaleDown),
+                                            ),
+                                          ),
+                                          prefixIconConstraints:
+                                              const BoxConstraints(
+                                            minWidth: 20,
+                                            minHeight: 20,
+                                          ),
+                                          hintText: 'Correo',
+                                          contentPadding:
+                                              const EdgeInsets.all(8.0),
+                                          isDense: true,
+                                          hintStyle:
+                                              const TextStyle(fontSize: 14),
+                                        ),
+                                        onChanged: (value) => {
+                                          setState(() {
+                                            email = value;
+                                          })
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          fillColor: Colors.white,
+                                          filled: true,
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          prefixIcon: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: SvgPicture.asset(
+                                                  'assets/logos/user.svg',
+                                                  fit: BoxFit.scaleDown),
+                                            ),
+                                          ),
+                                          prefixIconConstraints:
+                                              const BoxConstraints(
+                                            minWidth: 20,
+                                            minHeight: 20,
+                                          ),
+                                          hintText: 'Nombre de usuario',
+                                          contentPadding:
+                                              const EdgeInsets.all(8.0),
+                                          isDense: true,
+                                          hintStyle:
+                                              const TextStyle(fontSize: 14),
+                                        ),
+                                        onChanged: (value) => {
+                                          setState(() {
+                                            username = value;
+                                          })
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: TextFormField(
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                          fillColor: Colors.white,
+                                          filled: true,
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          prefixIcon: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: SvgPicture.asset(
+                                                  'assets/logos/lock.svg',
+                                                  fit: BoxFit.scaleDown),
+                                            ),
+                                          ),
+                                          prefixIconConstraints:
+                                              const BoxConstraints(
+                                            minWidth: 20,
+                                            minHeight: 20,
+                                          ),
+                                          hintText: 'Contraseña',
+                                          contentPadding:
+                                              const EdgeInsets.all(8.0),
+                                          isDense: true,
+                                          hintStyle:
+                                              const TextStyle(fontSize: 14),
+                                        ),
+                                        onChanged: (value) => {
+                                          setState(() {
+                                            password = value;
+                                          })
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: TextButton(
+                                        onPressed: () async {
+                                          await HttpService.register(email,
+                                              username, password, context);
+                                          if (!mounted) return;
+                                          Navigator.of(context).pop();
+                                          setState(() {});
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            color: const Color(0xFFFF9F1C),
+                                            border: Border.all(
+                                              color: Colors.black,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 30.0,
+                                                vertical: 0.0),
+                                            child: Text(
+                                              'LISTO',
+                                              style: TextStyle(
+                                                  fontFamily: 'Titilium',
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 24.0,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ]),
+                                ));
+                              },
+                              context: context,
+                            );
+                          },
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 50, vertical: 5),
