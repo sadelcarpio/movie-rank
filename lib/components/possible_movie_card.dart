@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ratings/models/movies.dart';
+import 'package:movie_ratings/services/api_calls.dart';
 
 class PossibleMovieCard extends StatelessWidget {
   final Movie? movie;
-  final Function? press;
+  final String? name;
   const PossibleMovieCard({
     Key? key,
     this.movie,
-    this.press,
+    this.name,
   }) : super(key: key);
 
   @override
@@ -20,30 +21,45 @@ class PossibleMovieCard extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-              child: SelectableText(
-                movie!.title!,
-                style: const TextStyle(
-                  height: 1.5,
-                  fontFamily: 'Titilium',
-                  fontSize: 25.0,
-                  color: Color(0xFF8E5108),
-                ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    child: Text(
+                      movie!.title!,
+                      style: const TextStyle(
+                        height: 1.5,
+                        fontFamily: 'Titilium',
+                        fontSize: 25.0,
+                        color: Color(0xFF8E5108),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                    child: Text(movie!.year!,
+                        style: const TextStyle(
+                            height: 1.2,
+                            fontFamily: 'Titilium',
+                            fontSize: 16.0,
+                            color: Colors.black)),
+                  ),
+                ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-              child: SelectableText(movie!.year!,
-                  style: const TextStyle(
-                      height: 1.2,
-                      fontFamily: 'Titilium',
-                      fontSize: 16.0,
-                      color: Colors.black)),
-            ),
+            FloatingActionButton.small(
+              onPressed: () async {
+                await HttpService.createMovie(movie!);
+                Navigator.of(context).pop();
+              },
+              backgroundColor: const Color(0xFFFF9F1C),
+              child: const Icon(Icons.add, size: 20),
+            )
           ],
         ),
       ),

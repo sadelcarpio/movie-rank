@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:movie_ratings/screens/homepage.dart';
@@ -8,7 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: 'assets/dotenv');
+  if (kReleaseMode) {
+    await dotenv.load(fileName: 'assets/.env.prod');
+  } else {
+    await dotenv.load(fileName: 'assets/.env.dev');
+  }
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var user = prefs.getString('user');
   runApp(MaterialApp(
@@ -21,11 +26,10 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Movie Rank',
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
