@@ -38,13 +38,13 @@ class _MovieCardState extends State<MovieCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 5.0),
+                      padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 0.0),
                       child: Text(
                         movie.title,
                         style: const TextStyle(
                           height: 1.2,
-                          fontFamily: 'NotoSans',
-                          fontSize: 14.0,
+                          fontFamily: 'Titilium',
+                          fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF502700),
                         ),
@@ -54,16 +54,17 @@ class _MovieCardState extends State<MovieCard> {
                       flex: 3,
                       child: Padding(
                         padding:
-                            const EdgeInsets.fromLTRB(12.0, 0.0, 10.0, 0.0),
-                        child: SingleChildScrollView(
-                          child: Text(
-                            movie.plot,
-                            style: const TextStyle(
-                                height: 1.2,
-                                fontFamily: 'NotoSans',
-                                fontSize: 12.0,
-                                color: Colors.black),
+                            const EdgeInsets.fromLTRB(12.0, 4.0, 10.0, 0.0),
+                        child: Text(
+                          movie.plot,
+                          style: const TextStyle(
+                            height: 1.2,
+                            fontSize: 13.0,
+                            fontFamily: 'Titilium',
+                            color: Colors.black,
                           ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 5,
                         ),
                       ),
                     ),

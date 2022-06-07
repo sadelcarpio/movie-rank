@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
               title: const Text(
                 'Movie Rank',
                 style: TextStyle(
-                  fontFamily: 'NotoSans',
+                  fontFamily: 'Titilium',
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                 ),
