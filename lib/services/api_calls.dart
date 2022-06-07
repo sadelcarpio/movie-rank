@@ -52,7 +52,7 @@ class HttpService {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('user', json[1]);
           await Navigator.of(context).pushReplacement(
-            CupertinoPageRoute(builder: (context) => HomePage(name: user)),
+            CupertinoPageRoute(builder: (context) => const HomePage()),
           );
         } else {
           await EasyLoading.showInfo(json[0].toString());
@@ -111,7 +111,7 @@ class HttpService {
             'Access-Control-Allow-Origin': '*',
           },
           body: jsonEncode({
-            "imdb_id": movie.id,
+            "imdb_id": movie.imdbId,
             "year": movie.year,
             "title": movie.title,
             "img_url": movie.imgUrl

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ratings/models/movies.dart';
-import 'package:movie_ratings/services/api_calls.dart';
 
 class PossibleMovieCard extends StatelessWidget {
   final Movie? movie;
@@ -53,10 +52,7 @@ class PossibleMovieCard extends StatelessWidget {
               ),
             ),
             FloatingActionButton.small(
-              onPressed: () async {
-                await HttpService.createMovie(movie!);
-                Navigator.of(context).pop();
-              },
+              onPressed: () {},
               backgroundColor: const Color(0xFFFF9F1C),
               child: const Icon(Icons.add, size: 20),
             )
