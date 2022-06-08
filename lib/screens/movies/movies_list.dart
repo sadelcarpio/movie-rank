@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:movie_ratings/components/movie_card.dart';
 import 'package:movie_ratings/providers/favorites_provider.dart';
 

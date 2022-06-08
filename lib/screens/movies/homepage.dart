@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ratings/constants.dart';
-import 'package:movie_ratings/screens/movies_list.dart';
-import 'package:movie_ratings/screens/favorites.dart';
+import 'package:movie_ratings/screens/movies/favorites.dart';
+import 'package:movie_ratings/screens/movies/movies_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               backgroundColor: Colors.orange[500],
+              elevation: 0,
               title: const Text(
                 'Movie Rank',
                 style: TextStyle(
@@ -42,9 +43,11 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(65),
-                child: ColoredBox(
+            ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ColoredBox(
                   color: Colors.orange[700]!,
                   child: const TabBar(
                     indicatorColor: mainColor,
@@ -63,26 +66,28 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-              ),
-            ),
-            body: Stack(children: [
-              Column(
-                children: [
-                  Expanded(
-                    child: Image.asset(
-                      'assets/images/movie_collage_dark.jpeg',
-                      fit: BoxFit.cover,
+                Expanded(
+                  child: Stack(children: [
+                    Column(
+                      children: [
+                        Expanded(
+                          child: Image.asset(
+                            'assets/images/movie_collage_dark.jpeg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              const TabBarView(
-                children: [
-                  MoviesList(),
-                  FavoritesList(),
-                ],
-              ),
-            ]),
+                    const TabBarView(
+                      children: [
+                        MoviesList(),
+                        FavoritesList(),
+                      ],
+                    ),
+                  ]),
+                ),
+              ],
+            ),
           ),
         ),
       ),

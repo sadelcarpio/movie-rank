@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:movie_ratings/models/movies.dart';
 import 'package:movie_ratings/models/reviews.dart';
-import 'package:movie_ratings/screens/homepage.dart';
+import 'package:movie_ratings/screens/movies/homepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HttpService {

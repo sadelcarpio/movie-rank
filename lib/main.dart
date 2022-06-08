@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ratings/providers/favorites_provider.dart';
-import 'package:movie_ratings/screens/homepage.dart';
+import 'package:movie_ratings/screens/movies/homepage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:movie_ratings/firebase_options.dart';
-import 'package:movie_ratings/screens/login_page.dart';
+import 'package:movie_ratings/screens/login/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_ratings/models/movies.dart';
 

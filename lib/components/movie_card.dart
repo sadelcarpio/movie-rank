@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movie_ratings/constants.dart';
 import 'package:movie_ratings/providers/favorites_provider.dart';
+import 'package:movie_ratings/screens/movies/reviews.dart';
+import 'package:movie_ratings/screens/movies/write_review.dart';
 import 'package:provider/provider.dart';
 
 class MovieCard extends StatefulWidget {
@@ -71,61 +74,98 @@ class _MovieCardState extends State<MovieCard> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 10.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: FloatingActionButton.small(
-                              heroTag: null,
-                              onPressed: () {},
-                              backgroundColor: mainColor,
-                              elevation: 10,
-                              child: SvgPicture.asset(
-                                'assets/logos/eye.svg',
-                                width: 25,
-                                height: 25,
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: FloatingActionButton.small(
+                                heroTag: null,
+                                onPressed: () {
+                                  Provider.of<MoviesProvider>(context,
+                                          listen: false)
+                                      .toggleFavorite(widget.imdbId);
+                                },
+                                backgroundColor: mainColor,
+                                elevation: 10,
+                                child: movie.favorite
+                                    ? const Icon(
+                                        Icons.favorite_rounded,
+                                        color: Colors.red,
+                                        size: 18.0,
+                                      )
+                                    : SvgPicture.asset(
+                                        'assets/logos/heart.svg',
+                                        width: 18,
+                                        height: 18,
+                                      ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: FloatingActionButton.small(
-                              heroTag: null,
-                              onPressed: () {},
-                              backgroundColor: mainColor,
-                              elevation: 10,
-                              child: SvgPicture.asset(
-                                'assets/logos/star.svg',
-                                width: 20,
-                                height: 20,
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: FloatingActionButton.small(
+                                heroTag: null,
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) =>
+                                              const ReviewsPage()));
+                                },
+                                backgroundColor: mainColor,
+                                elevation: 10,
+                                child: SvgPicture.asset(
+                                  'assets/logos/eye.svg',
+                                  width: 22,
+                                  height: 22,
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: FloatingActionButton.small(
-                              heroTag: null,
-                              onPressed: () {
-                                Provider.of<MoviesProvider>(context,
-                                        listen: false)
-                                    .toggleFavorite(widget.imdbId);
-                              },
-                              backgroundColor: mainColor,
-                              elevation: 10,
-                              child: movie.favorite
-                                  ? const Icon(
-                                      Icons.favorite_rounded,
-                                      color: Colors.red,
-                                      size: 20.0,
-                                    )
-                                  : SvgPicture.asset(
-                                      'assets/logos/heart.svg',
-                                      width: 20,
-                                      height: 20,
-                                    ),
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: FloatingActionButton.small(
+                                heroTag: null,
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) =>
+                                              const WriteReview()));
+                                },
+                                backgroundColor: mainColor,
+                                elevation: 10,
+                                child: SvgPicture.asset(
+                                  'assets/logos/star.svg',
+                                  width: 18,
+                                  height: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5.0),
+                              child: Text(
+                                'Subido por:  ${movie.postedBy}',
+                                style: const TextStyle(
+                                  fontFamily: 'Titilium',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12.0,
+                                  height: 1.0,
+                                  color: secondaryColor,
+                                ),
+                              ),
                             ),
                           ),
                         ],
