@@ -154,9 +154,8 @@ class _LoginPageState extends State<LoginPage> {
                                 const EdgeInsets.symmetric(horizontal: 5.0),
                             child: TextButton(
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.of(context).push(
                                     // pushReplacement
-                                    context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             const HomePage()));

@@ -1,64 +1,83 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ratings/models/movies.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:movie_ratings/constants.dart';
+import 'package:movie_ratings/providers/movies_provider.dart';
+import 'package:provider/provider.dart';
 
 class PossibleMovieCard extends StatelessWidget {
-  final Movie? movie;
-  final String? name;
-  const PossibleMovieCard({
-    Key? key,
-    this.movie,
-    this.name,
-  }) : super(key: key);
-
+  final Map movie;
+  const PossibleMovieCard({Key? key, required this.movie}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: const Color(0xFFFFFFFF),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(left: Radius.circular(15.0)),
-        side: BorderSide(width: 2, color: Colors.black),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    child: Text(
-                      movie!.title!,
-                      style: const TextStyle(
-                        height: 1.5,
-                        fontFamily: 'Titilium',
-                        fontSize: 25.0,
-                        color: Color(0xFF8E5108),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-                    child: Text(movie!.year!,
-                        style: const TextStyle(
-                            height: 1.2,
-                            fontFamily: 'Titilium',
-                            fontSize: 16.0,
-                            color: Colors.black)),
-                  ),
-                ],
-              ),
-            ),
-            FloatingActionButton.small(
-              onPressed: () {},
-              backgroundColor: const Color(0xFFFF9F1C),
-              child: const Icon(Icons.add, size: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Center(
+          child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        decoration: BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black,
+              blurRadius: 10.0,
+              blurStyle: BlurStyle.outer,
             )
           ],
+          color: const Color(0XCCF5F5F5),
+          borderRadius: BorderRadius.circular(15.0),
         ),
-      ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              flex: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  '${movie['title']} ${movie['description']}',
+                  style: const TextStyle(
+                    fontFamily: 'NotoSans',
+                    height: 1.2,
+                    fontSize: 14.0,
+                    color: secondaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: FloatingActionButton(
+                    onPressed: () async {
+                      FocusScopeNode currentFocus = FocusScope.of(context);
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+                      await Provider.of<MoviesProvider>(context, listen: false)
+                          .addMovie(movie);
+                      Navigator.of(context).pop();
+                    },
+                    backgroundColor: Colors.orange[500],
+                    elevation: 10,
+                    child: SvgPicture.asset(
+                      'assets/logos/plus.svg',
+                      width: 20.0,
+                      height: 20.0,
+                      color: Colors.white,
+                    ),
+                    heroTag: null,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      )),
     );
   }
 }

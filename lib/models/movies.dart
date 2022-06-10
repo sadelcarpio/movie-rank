@@ -1,6 +1,5 @@
 class Movie {
   final String? title, plot, postedBy, imgUrl, year, imdbId;
-  final bool? favorite;
   Movie({
     this.title,
     this.plot,
@@ -8,7 +7,6 @@ class Movie {
     this.imgUrl,
     this.year,
     this.imdbId,
-    this.favorite,
   });
 
   factory Movie.fromRTDB(Map<String, dynamic> data) {
@@ -18,7 +16,6 @@ class Movie {
         postedBy: data['postedBy'],
         imgUrl: data['imgUrl'],
         year: data['year'],
-        imdbId: data['imdbId'],
-        favorite: data['favorite']);
+        imdbId: data['imdbId']);
   }
 }

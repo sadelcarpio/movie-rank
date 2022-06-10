@@ -26,6 +26,11 @@ class _MovieCardState extends State<MovieCard> {
   Widget build(BuildContext context) {
     final Movie movie =
         Provider.of<MoviesProvider>(context, listen: true).getById(imdbId);
+    final List<String?> favoriteIds =
+        Provider.of<MoviesProvider>(context, listen: true)
+            .favorites
+            .map((elem) => elem.imdbId)
+            .toList();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -84,28 +89,27 @@ class _MovieCardState extends State<MovieCard> {
                             child: SizedBox(
                               width: 28,
                               height: 28,
-                              child: Consumer<MoviesProvider>(
-                                  builder: (context, model, child) {
-                                return FloatingActionButton.small(
-                                  heroTag: null,
-                                  onPressed: () async {
-                                    model.toggleFavorite(movie.imdbId!);
-                                  },
-                                  backgroundColor: mainColor,
-                                  elevation: 10,
-                                  child: movie.favorite!
-                                      ? const Icon(
-                                          Icons.favorite_rounded,
-                                          color: Colors.red,
-                                          size: 18.0,
-                                        )
-                                      : SvgPicture.asset(
-                                          'assets/logos/heart.svg',
-                                          width: 18,
-                                          height: 18,
-                                        ),
-                                );
-                              }),
+                              child: FloatingActionButton.small(
+                                heroTag: null,
+                                onPressed: () {
+                                  Provider.of<MoviesProvider>(context,
+                                          listen: false)
+                                      .toggleFavorite(movie.imdbId!);
+                                },
+                                backgroundColor: mainColor,
+                                elevation: 10,
+                                child: favoriteIds.contains(imdbId)
+                                    ? const Icon(
+                                        Icons.favorite_rounded,
+                                        color: Colors.red,
+                                        size: 18.0,
+                                      )
+                                    : SvgPicture.asset(
+                                        'assets/logos/heart.svg',
+                                        width: 18,
+                                        height: 18,
+                                      ),
+                              ),
                             ),
                           ),
                           Expanded(
