@@ -45,6 +45,7 @@ dependencies:
   firebase_core: ^1.17.1
   firebase_database: ^9.0.15
   beautiful_soup_dart: ^0.2.0
+  firebase_auth: ^3.3.20
 
 dev_dependencies:
   flutter_lints: ^1.0.0

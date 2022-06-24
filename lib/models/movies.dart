@@ -1,13 +1,14 @@
 class Movie {
   final String? title, plot, postedBy, imgUrl, year, imdbId;
-  Movie({
-    this.title,
-    this.plot,
-    this.postedBy,
-    this.imgUrl,
-    this.year,
-    this.imdbId,
-  });
+  final int? postedAt;
+  Movie(
+      {this.title,
+      this.plot,
+      this.postedBy,
+      this.imgUrl,
+      this.year,
+      this.imdbId,
+      this.postedAt});
 
   factory Movie.fromRTDB(Map<String, dynamic> data) {
     return Movie(
@@ -16,6 +17,7 @@ class Movie {
         postedBy: data['postedBy'],
         imgUrl: data['imgUrl'],
         year: data['year'],
-        imdbId: data['imdbId']);
+        imdbId: data['imdbId'],
+        postedAt: data['postedAt']);
   }
 }

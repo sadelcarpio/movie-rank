@@ -120,11 +120,7 @@ class _MovieCardState extends State<MovieCard> {
                               child: FloatingActionButton.small(
                                 heroTag: null,
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) =>
-                                              const ReviewsPage()));
+                                  Navigator.pushNamed(context, '/reviews');
                                 },
                                 backgroundColor: mainColor,
                                 elevation: 10,
@@ -144,11 +140,7 @@ class _MovieCardState extends State<MovieCard> {
                               child: FloatingActionButton.small(
                                 heroTag: null,
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) =>
-                                              const WriteReview()));
+                                  Navigator.pushNamed(context, '/newReview');
                                 },
                                 backgroundColor: mainColor,
                                 elevation: 10,

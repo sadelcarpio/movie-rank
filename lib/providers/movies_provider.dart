@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:movie_ratings/models/movies.dart';
@@ -9,7 +10,8 @@ class MoviesProvider with ChangeNotifier {
   List<Movie> _movies = [];
   List<Movie> _favorites = [];
   final _db = FirebaseDatabase.instance.ref();
-
+  late String userName =
+      FirebaseAuth.instance.currentUser!.email!.split('@')[0];
   static const pathPeliculas = 'peliculas';
   static const pathUsuarios = 'usuarios';
 
@@ -34,7 +36,7 @@ class MoviesProvider with ChangeNotifier {
     } else {
       favoritesIds.add(movieId);
     }
-    DatabaseReference user = _db.child('$pathUsuarios/sergio');
+    DatabaseReference user = _db.child('$pathUsuarios/$userName');
     user.update({'favorites': favoritesIds});
     notifyListeners();
   }
@@ -46,10 +48,11 @@ class MoviesProvider with ChangeNotifier {
         'imdbId': possibleMovie['id'],
         'imgUrl': possibleMovie['image']
             .replaceFirst('_V1_Ratio0.7273_AL_', '_V1_UX150_CR0,3,150,222_AL_'),
-        'postedBy': 'sergio',
+        'postedBy': userName,
         'title': possibleMovie['title'],
         'year': possibleMovie['description'],
-        'plot': await HttpService.scrapePlot(possibleMovie['id'])
+        'plot': await HttpService.scrapePlot(possibleMovie['id']),
+        'postedAt': DateTime.now().millisecondsSinceEpoch
       }
     });
     notifyListeners();
@@ -73,9 +76,11 @@ class MoviesProvider with ChangeNotifier {
 
   void _listenFavorites() {
     _favoritesStream =
-        _db.child('$pathUsuarios/sergio/favorites').onValue.listen((event) {
+        _db.child('$pathUsuarios/$userName/favorites').onValue.listen((event) {
       if (event.snapshot.value != null) {
         final List allFavorites = event.snapshot.value as List;
+        print(allFavorites);
+        print(_movies);
         _favorites = allFavorites.map((imdbId) => getById(imdbId)).toList();
       } else {
         _favorites = [];
@@ -86,8 +91,8 @@ class MoviesProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    _moviesStream.cancel();
     _favoritesStream.cancel();
+    _moviesStream.cancel();
     super.dispose();
   }
 }

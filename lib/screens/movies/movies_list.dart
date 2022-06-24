@@ -36,6 +36,7 @@ class _MoviesListState extends State<MoviesList> {
                 child:
                     Consumer<MoviesProvider>(builder: (context, model, child) {
                   return ListView.builder(
+                      key: const PageStorageKey('movies_key'),
                       itemCount: model.movies.length,
                       itemBuilder: (context, index) {
                         return MovieCard(imdbId: model.movies[index].imdbId!);
@@ -56,10 +57,7 @@ class _MoviesListState extends State<MoviesList> {
                 padding: const EdgeInsets.only(right: 10.0, bottom: 20.0),
                 child: FloatingActionButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => const SearchMovie()));
+                    Navigator.pushNamed(context, '/newMovie');
                   },
                   backgroundColor: Colors.orange[500],
                   elevation: 10,
