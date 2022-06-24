@@ -1,12 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movie_ratings/constants.dart';
 import 'package:movie_ratings/models/movies.dart';
 import 'package:movie_ratings/providers/movies_provider.dart';
-import 'package:movie_ratings/screens/movies/reviews.dart';
-import 'package:movie_ratings/screens/movies/write_review.dart';
 import 'package:provider/provider.dart';
 
 class MovieCard extends StatefulWidget {

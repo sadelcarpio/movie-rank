@@ -6,7 +6,6 @@ import 'package:movie_ratings/firebase_options.dart';
 import 'package:movie_ratings/providers/movies_provider.dart';
 import 'package:movie_ratings/screens/login/login_page.dart';
 import 'package:movie_ratings/screens/movies/home_navigator.dart';
-import 'package:movie_ratings/screens/movies/homepage.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

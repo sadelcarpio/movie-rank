@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:movie_ratings/screens/movies/homepage.dart';
 import 'package:movie_ratings/screens/movies/reviews.dart';
 import 'package:movie_ratings/screens/movies/search_movie.dart';

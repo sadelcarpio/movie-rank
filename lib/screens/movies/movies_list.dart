@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movie_ratings/components/movie_card.dart';
 import 'package:movie_ratings/providers/movies_provider.dart';
-import 'package:movie_ratings/screens/movies/search_movie.dart';
 import 'package:provider/provider.dart';
 
 class MoviesList extends StatefulWidget {
@@ -35,6 +33,11 @@ class _MoviesListState extends State<MoviesList> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child:
                     Consumer<MoviesProvider>(builder: (context, model, child) {
+                  model.movies.sort((a, b) {
+                    int? adate = a.postedAt;
+                    int? bdate = b.postedAt;
+                    return bdate!.compareTo(adate!);
+                  });
                   return ListView.builder(
                       key: const PageStorageKey('movies_key'),
                       itemCount: model.movies.length,

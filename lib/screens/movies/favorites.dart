@@ -14,8 +14,6 @@ class FavoritesList extends StatefulWidget {
 class _FavoritesListState extends State<FavoritesList> {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<MoviesProvider>(context).userName;
-    print(user);
     final List<Movie> favoriteMovies =
         Provider.of<MoviesProvider>(context).favorites;
     return RefreshIndicator(

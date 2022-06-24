@@ -64,7 +64,11 @@ class MoviesProvider with ChangeNotifier {
   }
 
   void _listenMovies() {
-    _moviesStream = _db.child(pathPeliculas).onValue.listen((event) {
+    _moviesStream = _db
+        .child(pathPeliculas)
+        .orderByChild('postedAt')
+        .onValue
+        .listen((event) {
       final allMovies = Map<String, dynamic>.from(
           event.snapshot.value as Map<dynamic, dynamic>);
       _movies = allMovies.values
@@ -75,12 +79,13 @@ class MoviesProvider with ChangeNotifier {
   }
 
   void _listenFavorites() {
-    _favoritesStream =
-        _db.child('$pathUsuarios/$userName/favorites').onValue.listen((event) {
+    _favoritesStream = _db
+        .child('$pathUsuarios/$userName/favorites')
+        .orderByChild('postedAt')
+        .onValue
+        .listen((event) {
       if (event.snapshot.value != null) {
         final List allFavorites = event.snapshot.value as List;
-        print(allFavorites);
-        print(_movies);
         _favorites = allFavorites.map((imdbId) => getById(imdbId)).toList();
       } else {
         _favorites = [];
