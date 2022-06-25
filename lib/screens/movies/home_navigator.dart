@@ -19,26 +19,31 @@ class _HomeNavigatorState extends State<HomeNavigator>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Navigator(
-      key: _key,
-      onGenerateRoute: (RouteSettings settings) {
-        return CupertinoPageRoute(
-            settings: settings,
-            builder: (BuildContext context) {
-              switch (settings.name) {
-                case '/':
-                  return const HomePage();
-                case '/reviews':
-                  return const ReviewsPage();
-                case '/newMovie':
-                  return const SearchMovie();
-                case '/newReview':
-                  return const WriteReview();
-                default:
-                  return const HomePage();
-              }
-            });
+    return WillPopScope(
+      onWillPop: () async {
+        return !await _key.currentState!.maybePop();
       },
+      child: Navigator(
+        key: _key,
+        onGenerateRoute: (RouteSettings settings) {
+          return CupertinoPageRoute(
+              settings: settings,
+              builder: (BuildContext context) {
+                switch (settings.name) {
+                  case '/':
+                    return const HomePage();
+                  case '/reviews':
+                    return const ReviewsPage();
+                  case '/newMovie':
+                    return const SearchMovie();
+                  case '/newReview':
+                    return const WriteReview();
+                  default:
+                    return const HomePage();
+                }
+              });
+        },
+      ),
     );
   }
 }

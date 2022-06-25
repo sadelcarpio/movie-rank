@@ -10,8 +10,8 @@ class MoviesProvider with ChangeNotifier {
   List<Movie> _movies = [];
   List<Movie> _favorites = [];
   final _db = FirebaseDatabase.instance.ref();
-  late String userName =
-      FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+  late String? userId = FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+  late String? userName = FirebaseAuth.instance.currentUser!.displayName;
   static const pathPeliculas = 'peliculas';
   static const pathUsuarios = 'usuarios';
 
@@ -24,6 +24,9 @@ class MoviesProvider with ChangeNotifier {
       _favorites.map((value) => value.imdbId).toList();
 
   Movie getById(imdbId) {
+    for (int i = 0; i < _movies.length; i++) {
+      print(_movies[i].imdbId);
+    }
     return _movies.firstWhere((movie) => movie.imdbId == imdbId);
   }
 
@@ -36,13 +39,14 @@ class MoviesProvider with ChangeNotifier {
     } else {
       favoritesIds.add(movieId);
     }
-    DatabaseReference user = _db.child('$pathUsuarios/$userName');
+    DatabaseReference user = _db.child('$pathUsuarios/$userId');
     user.update({'favorites': favoritesIds});
     notifyListeners();
   }
 
   Future<dynamic> addMovie(Map possibleMovie) async {
     DatabaseReference moviesRef = _db.child(pathPeliculas);
+    userName = FirebaseAuth.instance.currentUser!.displayName;
     moviesRef.update({
       possibleMovie['id']: {
         'imdbId': possibleMovie['id'],
@@ -80,12 +84,13 @@ class MoviesProvider with ChangeNotifier {
 
   void _listenFavorites() {
     _favoritesStream = _db
-        .child('$pathUsuarios/$userName/favorites')
+        .child('$pathUsuarios/$userId/favorites')
         .orderByChild('postedAt')
         .onValue
         .listen((event) {
       if (event.snapshot.value != null) {
         final List allFavorites = event.snapshot.value as List;
+        print(allFavorites);
         _favorites = allFavorites.map((imdbId) => getById(imdbId)).toList();
       } else {
         _favorites = [];

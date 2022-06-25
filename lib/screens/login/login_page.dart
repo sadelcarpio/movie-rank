@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late String username = '', password = '', email = '';
+  late String username = '', password = '', email = '', userName = '';
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -64,6 +64,10 @@ class _LoginPageState extends State<LoginPage> {
                       width: 255,
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          fontFamily: 'NotoSans',
+                        ),
                         autofillHints: const [AutofillHints.email],
                         cursorColor: Colors.orange[500],
                         decoration: InputDecoration(
@@ -93,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                           hintText: 'Correo',
                           contentPadding: const EdgeInsets.only(right: 10.0),
                           isDense: true,
-                          hintStyle: const TextStyle(fontSize: 14),
+                          hintStyle: const TextStyle(fontSize: 14.0),
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -106,6 +110,10 @@ class _LoginPageState extends State<LoginPage> {
                       width: 255,
                       padding: const EdgeInsets.only(bottom: 15.0),
                       child: TextFormField(
+                        style: const TextStyle(
+                          fontSize: 14.0,
+                          fontFamily: 'NotoSans',
+                        ),
                         onFieldSubmitted: (value) async {},
                         obscureText: true,
                         cursorColor: Colors.orange[500],
@@ -136,7 +144,10 @@ class _LoginPageState extends State<LoginPage> {
                           hintText: 'Contraseña',
                           contentPadding: const EdgeInsets.only(right: 10.0),
                           isDense: true,
-                          hintStyle: const TextStyle(fontSize: 14),
+                          hintStyle: const TextStyle(
+                            fontSize: 14.0,
+                            fontFamily: 'NotoSans',
+                          ),
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -180,8 +191,10 @@ class _LoginPageState extends State<LoginPage> {
                           height: 40,
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
                           child: TextButton(
-                            onPressed: () {
-                              signUp();
+                            onPressed: () async {
+                              await showDialog(
+                                  context: context,
+                                  builder: (context) => createUserName());
                             },
                             style: TextButton.styleFrom(
                               fixedSize: const Size(120, 40),
@@ -225,6 +238,80 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  createUserName() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+    return AlertDialog(
+      title: const Center(child: Text('Crear Usuario')),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+      buttonPadding: const EdgeInsets.only(top: 0.0),
+      actionsPadding: const EdgeInsets.only(bottom: 10.0),
+      content: Form(
+        child: SizedBox(
+          height: 45,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                onFieldSubmitted: (value) async {},
+                cursorColor: Colors.orange[500],
+                decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  hintText: 'nombre de usuario',
+                  contentPadding: const EdgeInsets.all(10.0),
+                  isDense: true,
+                  hintStyle: const TextStyle(fontSize: 14),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    userName = value;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      actionsAlignment: MainAxisAlignment.center,
+      actions: [
+        TextButton(
+          style: TextButton.styleFrom(
+            fixedSize: const Size(50, 40),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            backgroundColor: Colors.orange[500],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40.0),
+            ),
+            elevation: 10,
+          ),
+          onPressed: () {
+            signUp(userName);
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+          child: const Text(
+            'Crear',
+            style: TextStyle(
+              fontFamily: 'Titilium',
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFFFFFFFF),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   Future signIn() async {
     await EasyLoading.show(status: 'Iniciando sesión ...');
     try {
@@ -237,14 +324,22 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future signUp() async {
+  Future signUp(String userName) async {
+    if (userName == '') {
+      return;
+    }
     await EasyLoading.show(status: 'Creando usuario ...');
     final DatabaseReference ref =
-        FirebaseDatabase.instance.ref('usuarios/${email.split('@')[0]}');
+        FirebaseDatabase.instance.ref('usuarios/${email.trim().split('@')[0]}');
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email.trim(), password: password.trim());
-      await ref.set({'nombre': email.split('@')[0]});
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: email.trim(), password: password.trim())
+          .then((res) async {
+        await res.user!.updateDisplayName(userName);
+        await res.user!.reload();
+      });
+      await ref.set({'nombre': userName});
       EasyLoading.showSuccess('Usuario creado con éxito!');
     } on FirebaseAuthException catch (e) {
       EasyLoading.showError(e.message.toString());
