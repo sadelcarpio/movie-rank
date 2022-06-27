@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:movie_ratings/components/movie_card.dart';
 import 'package:movie_ratings/screens/movies/homepage.dart';
 import 'package:movie_ratings/screens/movies/reviews.dart';
 import 'package:movie_ratings/screens/movies/search_movie.dart';
@@ -37,7 +38,8 @@ class _HomeNavigatorState extends State<HomeNavigator>
                   case '/newMovie':
                     return const SearchMovie();
                   case '/newReview':
-                    return const WriteReview();
+                    final args = settings.arguments as NewReviewArguments;
+                    return WriteReview(movie: args.movie);
                   default:
                     return const HomePage();
                 }
