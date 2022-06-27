@@ -1,51 +1,51 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movie_ratings/components/movie_card.dart';
-import 'package:movie_ratings/providers/movies_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:movie_ratings/models/movies.dart';
 
-class MoviesList extends StatefulWidget {
+class MoviesList extends StatelessWidget {
   const MoviesList({Key? key}) : super(key: key);
-
-  @override
-  State<MoviesList> createState() => _MoviesListState();
-}
-
-class _MoviesListState extends State<MoviesList> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    Query movies =
+        FirebaseDatabase.instance.ref('peliculas').orderByChild('postedAt');
     return Stack(children: [
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            child: RefreshIndicator(
-              color: Colors.orange[500],
-              onRefresh: () async {
-                setState(() {});
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child:
-                    Consumer<MoviesProvider>(builder: (context, model, child) {
-                  model.movies.sort((a, b) {
-                    int? adate = a.postedAt;
-                    int? bdate = b.postedAt;
-                    return bdate!.compareTo(adate!);
-                  });
-                  return ListView.builder(
-                      key: const PageStorageKey('movies_key'),
-                      itemCount: model.movies.length,
-                      itemBuilder: (context, index) {
-                        return MovieCard(imdbId: model.movies[index].imdbId!);
-                      });
-                }),
-              ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: StreamBuilder(
+                  stream: movies.onValue,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.snapshot.value == null) {
+                        return Container();
+                      }
+                      DatabaseEvent event = snapshot.data;
+                      List<Movie> movies = event.snapshot.children.map((elem) {
+                        Movie movie = Movie.fromRTDB(Map<String, dynamic>.from(
+                            Map<String, dynamic>.from(
+                                elem.value as Map<dynamic, dynamic>)));
+                        return movie;
+                      }).toList();
+                      return ListView.builder(
+                        key: const PageStorageKey('movies-list'),
+                        itemCount: movies.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          Movie movie = movies[movies.length - index - 1];
+                          return MovieCard(movie: movie);
+                        },
+                      );
+                    } else {
+                      return Center(
+                          child: CircularProgressIndicator(
+                        color: Colors.orange[500],
+                      ));
+                    }
+                  }),
             ),
           ),
         ],

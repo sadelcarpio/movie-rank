@@ -1,16 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movie_ratings/constants.dart';
 import 'package:movie_ratings/models/movies.dart';
-import 'package:movie_ratings/providers/movies_provider.dart';
-import 'package:provider/provider.dart';
 
 class MovieCard extends StatefulWidget {
-  final String imdbId;
+  final Movie movie;
   const MovieCard({
     Key? key,
-    required this.imdbId,
+    required this.movie,
   }) : super(key: key);
 
   @override
@@ -18,16 +18,12 @@ class MovieCard extends StatefulWidget {
 }
 
 class _MovieCardState extends State<MovieCard> {
-  get imdbId => widget.imdbId;
+  get movie => widget.movie;
+  late Map? favorites;
+  late DatabaseReference ref;
+
   @override
   Widget build(BuildContext context) {
-    final Movie movie =
-        Provider.of<MoviesProvider>(context, listen: true).getById(imdbId);
-    final List<String?> favoriteIds =
-        Provider.of<MoviesProvider>(context, listen: true)
-            .favorites
-            .map((elem) => elem.imdbId)
-            .toList();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -86,27 +82,34 @@ class _MovieCardState extends State<MovieCard> {
                             child: SizedBox(
                               width: 28,
                               height: 28,
-                              child: FloatingActionButton.small(
-                                heroTag: null,
-                                onPressed: () {
-                                  Provider.of<MoviesProvider>(context,
-                                          listen: false)
-                                      .toggleFavorite(movie.imdbId!);
-                                },
-                                backgroundColor: mainColor,
-                                elevation: 10,
-                                child: favoriteIds.contains(imdbId)
-                                    ? const Icon(
-                                        Icons.favorite_rounded,
-                                        color: Colors.red,
-                                        size: 18.0,
-                                      )
-                                    : SvgPicture.asset(
-                                        'assets/logos/heart.svg',
-                                        width: 18,
-                                        height: 18,
-                                      ),
-                              ),
+                              child: FutureBuilder(
+                                  future: isFavorite(movie),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return FloatingActionButton.small(
+                                        heroTag: null,
+                                        onPressed: () {
+                                          toggleFavorite(movie);
+                                          setState(() {});
+                                        },
+                                        backgroundColor: mainColor,
+                                        elevation: 10,
+                                        child: snapshot.data == true
+                                            ? const Icon(
+                                                Icons.favorite_rounded,
+                                                color: Colors.red,
+                                                size: 18.0,
+                                              )
+                                            : SvgPicture.asset(
+                                                'assets/logos/heart.svg',
+                                                width: 18,
+                                                height: 18,
+                                              ),
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                  }),
                             ),
                           ),
                           Expanded(
@@ -192,5 +195,30 @@ class _MovieCardState extends State<MovieCard> {
         ),
       ),
     );
+  }
+
+  Future<bool> isFavorite(Movie movie) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    ref = FirebaseDatabase.instance.ref('usuarios/$userId');
+    DatabaseEvent event = await ref.child('favorites').once();
+    favorites = Map<String, dynamic>.from(
+        (event.snapshot.value ?? {}) as Map<dynamic, dynamic>);
+    return favorites!.keys.contains(movie.imdbId) ? true : false;
+  }
+
+  void toggleFavorite(Movie movie) async {
+    if (favorites!.isEmpty) {
+      ref.update({
+        'favorites': {movie.imdbId: movie.toMap()}
+      });
+    } else {
+      if (favorites!.keys.contains(movie.imdbId)) {
+        favorites!.remove(movie.imdbId);
+        ref.update({'favorites': favorites});
+      } else {
+        favorites![movie.imdbId] = movie.toMap();
+        ref.update({'favorites': favorites});
+      }
+    }
   }
 }

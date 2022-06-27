@@ -1,14 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movie_ratings/constants.dart';
-import 'package:movie_ratings/providers/movies_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:movie_ratings/services/api_calls.dart';
 
 class PossibleMovieCard extends StatelessWidget {
   final Map movie;
   const PossibleMovieCard({Key? key, required this.movie}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final String userName = FirebaseAuth.instance.currentUser!.displayName!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Center(
@@ -58,8 +60,18 @@ class PossibleMovieCard extends StatelessWidget {
                       if (!currentFocus.hasPrimaryFocus) {
                         currentFocus.unfocus();
                       }
-                      await Provider.of<MoviesProvider>(context, listen: false)
-                          .addMovie(movie);
+                      Map<String, dynamic> newMovie = {
+                        "title": movie['title'],
+                        "imdbId": movie['id'],
+                        "plot": await HttpService.scrapePlot(movie['id']),
+                        "postedAt": DateTime.now().millisecondsSinceEpoch,
+                        "year": movie['description'],
+                        "imgUrl": movie['image'].replaceFirst(
+                            '_V1_Ratio0.7273_AL_',
+                            '_V1_UX150_CR0,3,150,222_AL_'),
+                        "postedBy": userName
+                      };
+                      addMovie(newMovie);
                       Navigator.of(context).pop();
                     },
                     backgroundColor: Colors.orange[500],
@@ -79,5 +91,10 @@ class PossibleMovieCard extends StatelessWidget {
         ),
       )),
     );
+  }
+
+  addMovie(Map<String, dynamic> movie) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref('peliculas');
+    ref.update({movie['imdbId']: movie});
   }
 }

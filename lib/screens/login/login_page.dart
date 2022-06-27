@@ -329,8 +329,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     await EasyLoading.show(status: 'Creando usuario ...');
-    final DatabaseReference ref =
-        FirebaseDatabase.instance.ref('usuarios/${email.trim().split('@')[0]}');
+    final DatabaseReference ref = FirebaseDatabase.instance.ref('usuarios');
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
@@ -339,16 +338,12 @@ class _LoginPageState extends State<LoginPage> {
         await res.user!.updateDisplayName(userName);
         await res.user!.reload();
       });
-      await ref.set({'nombre': userName});
+      await ref
+          .child(FirebaseAuth.instance.currentUser!.uid)
+          .set({'nombre': userName});
       EasyLoading.showSuccess('Usuario creado con éxito!');
     } on FirebaseAuthException catch (e) {
       EasyLoading.showError(e.message.toString());
     }
   }
-  //
-  // Navigator.of(context).push(
-  // // pushReplacement
-  // MaterialPageRoute(
-  // builder: (context) =>
-  // const HomePage()));
 }

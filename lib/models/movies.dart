@@ -10,6 +10,18 @@ class Movie {
       this.imdbId,
       this.postedAt});
 
+  Map<String, dynamic> toMap() {
+    return {
+      "title": title,
+      "imdbId": imdbId,
+      "plot": plot,
+      "postedAt": postedAt,
+      "year": year,
+      "imgUrl": imgUrl,
+      "postedBy": postedBy
+    };
+  }
+
   factory Movie.fromRTDB(Map<String, dynamic> data) {
     return Movie(
         title: data['title'],
