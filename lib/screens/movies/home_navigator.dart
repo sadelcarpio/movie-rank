@@ -34,11 +34,12 @@ class _HomeNavigatorState extends State<HomeNavigator>
                   case '/':
                     return const HomePage();
                   case '/reviews':
-                    return const ReviewsPage();
+                    final args = settings.arguments as ReviewArgument;
+                    return ReviewsPage(movie: args.movie);
                   case '/newMovie':
                     return const SearchMovie();
                   case '/newReview':
-                    final args = settings.arguments as NewReviewArguments;
+                    final args = settings.arguments as ReviewArgument;
                     return WriteReview(movie: args.movie);
                   default:
                     return const HomePage();

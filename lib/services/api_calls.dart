@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 
 class HttpService {
   static final _client = http.Client();
-  static const _imdbAPI = 'https://imdb-api.com/en/API/SearchMovie/k_sw0tz07q/';
+  static final _imdbAPI = 'https://imdb-api.com/en/API/SearchMovie/' +
+      dotenv.env['IMDB_API']! +
+      '/';
 
   static getMovies(movieSearch) async {
     final uri = Uri.parse(_imdbAPI + movieSearch);

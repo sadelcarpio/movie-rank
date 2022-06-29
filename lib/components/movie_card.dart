@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movie_ratings/constants.dart';
 import 'package:movie_ratings/models/movies.dart';
+import 'package:movie_ratings/screens/movies/reviews.dart';
 import 'package:movie_ratings/screens/movies/write_review.dart';
 
 class MovieCard extends StatefulWidget {
@@ -134,7 +135,9 @@ class _MovieCardState extends State<MovieCard> {
                               child: FloatingActionButton.small(
                                 heroTag: null,
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/reviews');
+                                  Navigator.pushNamed(
+                                      context, ReviewsPage.routeName,
+                                      arguments: ReviewArgument(movie));
                                 },
                                 backgroundColor: mainColor,
                                 elevation: 10,
@@ -156,7 +159,7 @@ class _MovieCardState extends State<MovieCard> {
                                 onPressed: () {
                                   Navigator.pushNamed(
                                       context, WriteReview.routeName,
-                                      arguments: NewReviewArguments(movie));
+                                      arguments: ReviewArgument(movie));
                                 },
                                 backgroundColor: mainColor,
                                 elevation: 10,
@@ -239,7 +242,7 @@ class _MovieCardState extends State<MovieCard> {
   }
 }
 
-class NewReviewArguments {
+class ReviewArgument {
   final Movie movie;
-  NewReviewArguments(this.movie);
+  ReviewArgument(this.movie);
 }
