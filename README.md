@@ -1,16 +1,12 @@
 # movie_ratings
 
-A new Flutter project.
+App de rating de películas. Deja tu reseña y selecciona tus favoritas!
 
-## Getting Started
+## Screenshots
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Página de login/registro
+![](https://github.com/sadelcarpio/movie_rank/blob/main/readme_imgs/login.jpeg)
+- Tab de películas
+![](https://github.com/sadelcarpio/movie_rank/blob/main/readme_imgs/movies.jpeg)
+- Tab de favoritos
+![](https://github.com/sadelcarpio/movie_rank/blob/main/readme_imgs/favorites.jpeg)
